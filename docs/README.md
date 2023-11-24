@@ -33,4 +33,29 @@ sequenceDiagram
 
 ```
 
+The same logic in another point of view
+
+```mermaid
+graph LR
+    A[Пользователь] -- Вводит запрос --> B[Плагин]
+    B -- Передает запрос --> D[Наш API]
+    D -- Аутентификация\Хранение токенов --> E[Redis]
+    D -- Записывает\Удаляет задание --> F[RabbitMQ]
+    F -- Передает задание --> G[RunPod]
+    G -- Сохраняет результат --> H[S3 Бакет]
+    D -- Читает/Записывает данные --> I[PostgreSQL]
+    H -- Уведомление об успешном сохранении --> D
+    D -- Предоставляет ссылку на объект --> B
+    B -- Загружает результат --> A
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#fcf,stroke:#333,stroke-width:2px
+    style D fill:#fdd,stroke:#333,stroke-width:2px
+    style E fill:#fcf,stroke:#333,stroke-width:2px
+    style F fill:#cff,stroke:#333,stroke-width:2px
+    style G fill:#cfc,stroke:#333,stroke-width:2px
+    style H fill:#cfc,stroke:#333,stroke-width:2px
+    style I fill:#ff9,stroke:#333,stroke-width:2px
+```
+
 ## Try to use [https://mermaid.live/](https://mermaid.live/) as the more convinient tool to see mermaid scheme
