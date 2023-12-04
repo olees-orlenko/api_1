@@ -1,7 +1,7 @@
 from fastapi import status
 from fastapi.exceptions import HTTPException
-from fastapi.security import OAuth2PasswordBearer
 from fastapi_users.db import SQLAlchemyBaseUserTable
+from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from sqlalchemy import Boolean, Integer, String, create_engine, or_
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
@@ -14,13 +14,8 @@ from .schemas import CreateUserSchema
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 Base: DeclarativeMeta = declarative_base()
 engine = create_engine(DATABASE_URL)
-Session = sessionmaker(engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
-SECRET_KEY = "your_secret_key"
-ALGORITHM = "HS256"
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 
 class User(SQLAlchemyBaseUserTable[int], Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
