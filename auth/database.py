@@ -1,7 +1,6 @@
 from fastapi import status
 from fastapi.exceptions import HTTPException
 from fastapi_users.db import SQLAlchemyBaseUserTable
-from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from sqlalchemy import Boolean, Integer, String, create_engine, or_
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
@@ -16,6 +15,7 @@ Base: DeclarativeMeta = declarative_base()
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
+
 
 class User(SQLAlchemyBaseUserTable[int], Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

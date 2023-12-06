@@ -4,15 +4,13 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 
-from config import redis_url
-
-from .auth import SECRET_KEY, AuthHandler
+from .auth import REDIS_URL, SECRET_KEY, AuthHandler
 from .database import create_user, get_db, get_user
 from .schemas import CreateUserSchema, Token, UserLoginSchema
 
 router = APIRouter()
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-auth_handler = AuthHandler(secret_key=SECRET_KEY, redis_url=redis_url)
+auth_handler = AuthHandler(secret_key=SECRET_KEY, redis_url=REDIS_URL)
 
 
 @router.post("/create/", response_model=CreateUserSchema, tags=["Auth"])

@@ -5,19 +5,20 @@ import redis
 from fastapi import Cookie
 from passlib.context import CryptContext
 
-from config import redis_url
+from config import REDIS_HOST, REDIS_PASS, REDIS_PORT
 
-from .database import DATABASE_URL, User
+from .database import User
 
 pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
 SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
+REDIS_URL = f"redis://:{REDIS_PASS}@{REDIS_HOST}:{REDIS_PORT}"
 
 
 class AuthHandler:
     def __init__(self, secret_key, redis_url):
         self.secret_key = secret_key
-        self.redis_db = redis.StrictRedis.from_url(redis_url)
+        self.redis_db = redis.StrictRedis.from_url(REDIS_URL)
 
     def verify_password(self, plain_password, hashed_password):
         return pwd_context.verify(plain_password, hashed_password)
