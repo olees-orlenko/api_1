@@ -2,9 +2,9 @@ from fastapi import status
 from fastapi.exceptions import HTTPException
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from passlib.context import CryptContext
-from sqlalchemy import Boolean, Integer, String, create_engine, or_
+from sqlalchemy import Boolean, ForeignKey, Integer, String, create_engine, or_
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
-from sqlalchemy.orm import Mapped, Session, mapped_column, sessionmaker
+from sqlalchemy.orm import Mapped, Session, mapped_column, relationship, sessionmaker
 
 from config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER
 
@@ -27,6 +27,14 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    credit: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+
+class UserJob(SQLAlchemyBaseUserTable[int]):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
+    price: Mapped[int] = mapped_column(Integer, nullable=False)
+    user = relationship("User", back_populates="jobs")
 
 
 def get_db():
@@ -70,3 +78,12 @@ def create_user(user: CreateUserSchema, session: Session):
 
 def get_user(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
+
+
+def update_user_credit(user: User, new_credit: int, db: Session):
+    user.credit = new_credit
+    db.commit()
+
+
+def get_job(job_id: int, db: Session):
+    return db.query(UserJob).filter(UserJob.id == job_id).first()
